@@ -14,16 +14,81 @@ const FILTERS = [
   { val: 'ipc', label: 'Classificação (IPC)' }
 ];
 
+const BAHIA_TERRITORIES = [
+  'Irecê',
+  'Velho Chico',
+  'Chapada Diamantina',
+  'Sisal',
+  'Litoral Sul',
+  'Baixo Sul',
+  'Extremo Sul',
+  'Itapetinga',
+  'Vale do Jiquiriçá',
+  'Sertão do São Francisco',
+  'Bacia do Rio Grande',
+  'Bacia do Paramirim',
+  'Sertão Produtivo',
+  'Piemonte do Paraguaçu',
+  'Bacia do Jacuípe',
+  'Piemonte da Diamantina',
+  'Semiárido Nordeste II',
+  'Litoral Norte e Agreste Baiano',
+  'Portal do Sertão',
+  'Vitória da Conquista',
+  'Recôncavo',
+  'Médio Rio de Contas',
+  'Bacia do Rio Corrente',
+  'Itaparica',
+  'Piemonte Norte do Itapicuru',
+  'Metropolitano de Salvador',
+  'Costa do Descobrimento'
+];
+
+const BAHIA_MUNICIPALITY_SUGGESTIONS = [
+  'Salvador',
+  'Feira de Santana',
+  'Vitória da Conquista',
+  'Camaçari',
+  'Lauro de Freitas',
+  'Juazeiro',
+  'Ilhéus',
+  'Itabuna',
+  'Barreiras',
+  'Alagoinhas',
+  'Teixeira de Freitas',
+  'Jequié',
+  'Eunápolis',
+  'Porto Seguro',
+  'Jacobina',
+  'Paulo Afonso',
+  'Santo Antônio de Jesus',
+  'Simões Filho',
+  'Senhor do Bonfim',
+  'Guanambi',
+  'Serrinha',
+  'Valença',
+  'Irecê',
+  'Brumado',
+  'Bom Jesus da Lapa',
+  'Seabra',
+  'Lençóis',
+  "Dias d\'Ávila",
+  'Candeias',
+  'Cruz das Almas'
+];
+
 export default function PatentSearchPage() {
   const [health, setHealth] = useState({ ok: null, message: 'Conectando...' });
   
   const {
-    query, filterType, results, loading, error, page,
+    query, filterType, territory, municipality, results, loading, error, page,
     updateState, handleSearch, goToPage
   } = usePatentSearch();
 
+  const hasGeoFilter = Boolean(territory || municipality);
+
   const {
-    selectedPatentId, data: patentDetails, loading: detailsLoading, error: detailsError, isOpen,
+    selectedPatentId, selectedItem, data: patentDetails, loading: detailsLoading, error: detailsError, isOpen,
     openDetails, closeDetails
   } = usePatentDetails();
 
@@ -96,6 +161,45 @@ export default function PatentSearchPage() {
               </button>
             ))}
           </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Território de Identidade (BA)
+              <select
+                value={territory}
+                onChange={(e) => updateState({ territory: e.target.value })}
+                className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium normal-case tracking-normal text-zinc-900 outline-none transition-colors focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-500"
+              >
+                <option value="">Todos os territórios</option>
+                {BAHIA_TERRITORIES.map((territoryName) => (
+                  <option key={territoryName} value={territoryName}>
+                    {territoryName}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Município (BA)
+              <input
+                type="text"
+                list="bahia-municipios"
+                value={municipality}
+                onChange={(e) => updateState({ municipality: e.target.value })}
+                placeholder="Ex.: Salvador"
+                className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium normal-case tracking-normal text-zinc-900 outline-none transition-colors focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-500"
+              />
+              <datalist id="bahia-municipios">
+                {BAHIA_MUNICIPALITY_SUGGESTIONS.map((city) => (
+                  <option key={city} value={city} />
+                ))}
+              </datalist>
+            </label>
+          </div>
+
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Combine os campos geográficos da Bahia com qualquer filtro de patente para refinar os resultados.
+          </p>
         </form>
 
         {/* Error State */}
@@ -120,14 +224,21 @@ export default function PatentSearchPage() {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4">
               <h2 className="text-sm font-semibold">Resultados da Busca</h2>
-              <Badge>{results.total?.toLocaleString()} registros encontrados</Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge>{results.total?.toLocaleString()} registros encontrados</Badge>
+                {hasGeoFilter ? (
+                  <Badge className="bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300">
+                    BA: {[territory, municipality].filter(Boolean).join(' / ')}
+                  </Badge>
+                ) : null}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {results.items.map((item, idx) => (
                 <div 
                   key={item.numero || idx} 
-                  onClick={() => openDetails(item.numero)}
+                  onClick={() => openDetails(item)}
                   className="group cursor-pointer rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md flex flex-col justify-between h-full"
                 >
                   <div>
@@ -197,7 +308,23 @@ export default function PatentSearchPage() {
               {patentDetails && !detailsLoading && (
                 <div className="space-y-6">
                   <div>
-                    <Badge variant="primary">{selectedPatentId}</Badge>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <Badge variant="primary">{selectedPatentId}</Badge>
+                      {patentDetails.tipo && <Badge>{patentDetails.tipo}</Badge>}
+                      {patentDetails.fonte && <Badge>{`Fonte: ${patentDetails.fonte}`}</Badge>}
+                    </div>
+                    {(patentDetails.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url) && (
+                      <div className="mt-3">
+                        <a
+                          href={patentDetails.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs font-semibold text-teal-700 hover:text-teal-600 underline underline-offset-2"
+                        >
+                          Abrir fonte oficial no INPI
+                        </a>
+                      </div>
+                    )}
                     <h2 className="mt-3 text-xl font-bold leading-tight">{patentDetails.titulo || 'Sem Título'}</h2>
                   </div>
                   

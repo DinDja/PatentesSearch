@@ -1,10 +1,25 @@
 import { useState, useCallback } from 'react';
 
+function buildLocationQuery(territory, municipality) {
+  const tokens = [municipality, territory]
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  if (tokens.length === 0) {
+    return '';
+  }
+
+  // Forca contexto geografico do estado para aumentar relevancia no upstream.
+  return `${tokens.join(' ')} bahia`;
+}
+
 // hook: usePatentSearch.js
 export function usePatentSearch(initialLimit = 15) {
   const [searchState, setSearchState] = useState({
     query: '',
     filterType: 'q',
+    territory: '',
+    municipality: '',
     results: null,
     loading: false,
     error: '',
@@ -12,17 +27,31 @@ export function usePatentSearch(initialLimit = 15) {
     limit: initialLimit,
   });
 
-  const fetchResults = useCallback(async (query, filterType, page) => {
-    if (!query.trim()) return;
+  const fetchResults = useCallback(async (query, filterType, page, territory, municipality) => {
+    const normalizedQuery = query.trim();
+    const locationQuery = buildLocationQuery(territory, municipality);
+
+    if (!normalizedQuery && !locationQuery) {
+      setSearchState(prev => ({ ...prev, results: null, error: '', loading: false, page: 1 }));
+      return;
+    }
 
     setSearchState(prev => ({ ...prev, loading: true, error: '' }));
 
     try {
       const params = new URLSearchParams({
-        [filterType]: query,
-        page,
-        limit: searchState.limit,
+        page: String(page),
+        limit: String(searchState.limit),
       });
+
+      if (normalizedQuery) {
+        params.set(filterType, normalizedQuery);
+      }
+
+      if (locationQuery) {
+        const currentQ = params.get('q');
+        params.set('q', currentQ ? `${currentQ} ${locationQuery}` : locationQuery);
+      }
 
       const res = await fetch(`/api/search?${params}`);
       if (!res.ok) throw new Error('Falha ao buscar patentes. Tente novamente.');
@@ -36,11 +65,23 @@ export function usePatentSearch(initialLimit = 15) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchResults(searchState.query, searchState.filterType, 1);
+    fetchResults(
+      searchState.query,
+      searchState.filterType,
+      1,
+      searchState.territory,
+      searchState.municipality
+    );
   };
 
   const goToPage = (newPage) => {
-    fetchResults(searchState.query, searchState.filterType, newPage);
+    fetchResults(
+      searchState.query,
+      searchState.filterType,
+      newPage,
+      searchState.territory,
+      searchState.municipality
+    );
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

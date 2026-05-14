@@ -8,6 +8,12 @@ Aplicacao Next.js estilo Google Patentes para consultar sua API sem CORS no brow
   - `GET /api/search`
   - `GET /api/patents/:numero`
 
+`GET /api/patents/:numero` agora tenta buscar os detalhes em tempo real no proprio INPI, conforme o tipo do processo:
+- Patente: consulta a pagina oficial do detalhe no `busca.inpi.gov.br`
+- Programa de computador: consulta o arquivo oficial da revista no `revistas.inpi.gov.br`
+
+Se o INPI estiver indisponivel no momento da consulta, a rota retorna fallback do upstream para nao quebrar a experiencia.
+
 No browser, o frontend chama `/api/*` na mesma origem, e os Route Handlers do Next.js fazem o proxy para a API upstream.
 
 ## Produção na Vercel
@@ -64,9 +70,10 @@ npm run dev
   - `titulo`
   - `depositante`
   - `ipc`
+  - filtro geográfico opcional por território e município da Bahia (combinado via `q`)
 - Paginacao (`page`, `limit`)
 - Lista de resultados com metadados
-- Modal de detalhes (consulta por numero)
+- Modal de detalhes por numero com consulta oficial no INPI por tipo de processo
 - Layout responsivo (desktop e mobile)
   - Proxy via Route Handlers do Next.js em `app/api/*`
 
