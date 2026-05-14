@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Search, Server, ChevronLeft, ChevronRight, X, Loader2 } from 'lucide-react';
 import { usePatentSearch } from '../hooks/usePatentSearch';
 import { usePatentDetails } from '../hooks/usePatentDetails';
+import { BAHIA_TERRITORIES, BAHIA_MUNICIPALITY_SUGGESTIONS } from '../lib/bahiaTerritories';
 import { Button, Badge, EmptyState } from './ui';
 
 const FILTERS = [
@@ -12,69 +13,6 @@ const FILTERS = [
   { val: 'titulo', label: 'Título' },
   { val: 'depositante', label: 'Depositante / Empresa' },
   { val: 'ipc', label: 'Classificação (IPC)' }
-];
-
-const BAHIA_TERRITORIES = [
-  'Irecê',
-  'Velho Chico',
-  'Chapada Diamantina',
-  'Sisal',
-  'Litoral Sul',
-  'Baixo Sul',
-  'Extremo Sul',
-  'Itapetinga',
-  'Vale do Jiquiriçá',
-  'Sertão do São Francisco',
-  'Bacia do Rio Grande',
-  'Bacia do Paramirim',
-  'Sertão Produtivo',
-  'Piemonte do Paraguaçu',
-  'Bacia do Jacuípe',
-  'Piemonte da Diamantina',
-  'Semiárido Nordeste II',
-  'Litoral Norte e Agreste Baiano',
-  'Portal do Sertão',
-  'Vitória da Conquista',
-  'Recôncavo',
-  'Médio Rio de Contas',
-  'Bacia do Rio Corrente',
-  'Itaparica',
-  'Piemonte Norte do Itapicuru',
-  'Metropolitano de Salvador',
-  'Costa do Descobrimento'
-];
-
-const BAHIA_MUNICIPALITY_SUGGESTIONS = [
-  'Salvador',
-  'Feira de Santana',
-  'Vitória da Conquista',
-  'Camaçari',
-  'Lauro de Freitas',
-  'Juazeiro',
-  'Ilhéus',
-  'Itabuna',
-  'Barreiras',
-  'Alagoinhas',
-  'Teixeira de Freitas',
-  'Jequié',
-  'Eunápolis',
-  'Porto Seguro',
-  'Jacobina',
-  'Paulo Afonso',
-  'Santo Antônio de Jesus',
-  'Simões Filho',
-  'Senhor do Bonfim',
-  'Guanambi',
-  'Serrinha',
-  'Valença',
-  'Irecê',
-  'Brumado',
-  'Bom Jesus da Lapa',
-  'Seabra',
-  'Lençóis',
-  "Dias d\'Ávila",
-  'Candeias',
-  'Cruz das Almas'
 ];
 
 export default function PatentSearchPage() {
@@ -103,22 +41,42 @@ export default function PatentSearchPage() {
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans selection:bg-teal-500/30">
       
       {/* Topbar SaaS */}
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 px-6 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-50">
-            <Search className="h-4 w-4 text-white dark:text-zinc-900" />
-          </div>
-          <span className="text-sm font-semibold tracking-tight">Hub de Patentes</span>
+   <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/70 px-6 backdrop-blur-lg transition-all dark:border-zinc-800/80 dark:bg-zinc-950/70">
+      
+      {/* Lado Esquerdo: Logo e Título */}
+      <div className="group flex cursor-pointer items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-zinc-900 to-zinc-700 shadow-sm transition-transform group-hover:scale-105 dark:from-zinc-100 dark:to-zinc-300">
+          <Search className="h-4 w-4 text-white dark:text-zinc-950" strokeWidth={2.5} />
         </div>
-        <div className="flex items-center gap-4 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-          <div className="flex items-center gap-2">
-            <span className={`relative flex h-2 w-2 rounded-full ${health.ok ? 'bg-teal-500' : 'bg-red-500'}`}>
-              {health.ok && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75"></span>}
-            </span>
-            {health.message}
-          </div>
+        <span className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Patentes
+        </span>
+      </div>
+
+      {/* Lado Direito: Badge de Status (Health) */}
+      <div className="flex items-center">
+        <div
+          className={`flex items-center gap-2.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors ${
+            health.ok
+              ? "border-emerald-200/60 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-500/10 dark:text-emerald-400"
+              : "border-red-200/60 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-500/10 dark:text-red-400"
+          }`}
+        >
+          <span className="relative flex h-2 w-2 items-center justify-center">
+            {health.ok && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60 duration-1000"></span>
+            )}
+            <span
+              className={`relative inline-flex h-2 w-2 rounded-full ${
+                health.ok ? "bg-emerald-500 dark:bg-emerald-400" : "bg-red-500 dark:bg-red-400"
+              }`}
+            ></span>
+          </span>
+          {health.message}
         </div>
-      </header>
+      </div>
+
+    </header>
 
       <main className="mx-auto max-w-6xl px-6 py-12">
         {/* Search Header */}
@@ -162,7 +120,7 @@ export default function PatentSearchPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {/* <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               Território de Identidade (BA)
               <select
@@ -195,11 +153,11 @@ export default function PatentSearchPage() {
                 ))}
               </datalist>
             </label>
-          </div>
+          </div> */}
 
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          {/* <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Combine os campos geográficos da Bahia com qualquer filtro de patente para refinar os resultados.
-          </p>
+          </p> */}
         </form>
 
         {/* Error State */}
@@ -234,6 +192,12 @@ export default function PatentSearchPage() {
               </div>
             </div>
 
+            {/* {results.geoFiltered && (
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 -mt-4">
+                Filtro geográfico aplicado por varredura textual em {results.geoFilterLimit || results.limit} registros.
+              </p>
+            )} */}
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {results.items.map((item, idx) => (
                 <div 
@@ -265,7 +229,7 @@ export default function PatentSearchPage() {
             </div>
 
             {/* Pagination Component */}
-            {results.pages > 1 && (
+            {results.pages > 1 && !results.geoFiltered && (
               <div className="flex items-center justify-center gap-4 pt-8">
                 <Button variant="outline" disabled={page <= 1} onClick={() => goToPage(page - 1)}>
                   <ChevronLeft className="h-4 w-4 mr-1" /> Anterior

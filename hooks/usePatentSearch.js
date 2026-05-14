@@ -1,17 +1,7 @@
 import { useState, useCallback } from 'react';
+import { buildLocationSeedQuery, filterItemsByBahiaLocation } from '../lib/bahiaTerritories';
 
-function buildLocationQuery(territory, municipality) {
-  const tokens = [municipality, territory]
-    .map((value) => value.trim())
-    .filter(Boolean);
-
-  if (tokens.length === 0) {
-    return '';
-  }
-
-  // Forca contexto geografico do estado para aumentar relevancia no upstream.
-  return `${tokens.join(' ')} bahia`;
-}
+const GEO_FILTER_LIMIT = 300;
 
 // hook: usePatentSearch.js
 export function usePatentSearch(initialLimit = 15) {
@@ -29,9 +19,10 @@ export function usePatentSearch(initialLimit = 15) {
 
   const fetchResults = useCallback(async (query, filterType, page, territory, municipality) => {
     const normalizedQuery = query.trim();
-    const locationQuery = buildLocationQuery(territory, municipality);
+    const hasLocationFilter = Boolean(territory?.trim() || municipality?.trim());
+    const locationSeedQuery = buildLocationSeedQuery(territory, municipality);
 
-    if (!normalizedQuery && !locationQuery) {
+    if (!normalizedQuery && !hasLocationFilter) {
       setSearchState(prev => ({ ...prev, results: null, error: '', loading: false, page: 1 }));
       return;
     }
@@ -39,25 +30,59 @@ export function usePatentSearch(initialLimit = 15) {
     setSearchState(prev => ({ ...prev, loading: true, error: '' }));
 
     try {
+      const requestPage = hasLocationFilter ? 1 : page;
+      const requestLimit = hasLocationFilter
+        ? Math.max(Number(searchState.limit) || 15, GEO_FILTER_LIMIT)
+        : Number(searchState.limit) || 15;
+
       const params = new URLSearchParams({
-        page: String(page),
-        limit: String(searchState.limit),
+        page: String(requestPage),
+        limit: String(requestLimit),
       });
 
       if (normalizedQuery) {
         params.set(filterType, normalizedQuery);
       }
 
-      if (locationQuery) {
+      if (locationSeedQuery) {
         const currentQ = params.get('q');
-        params.set('q', currentQ ? `${currentQ} ${locationQuery}` : locationQuery);
+        params.set('q', currentQ ? `${currentQ} ${locationSeedQuery}` : locationSeedQuery);
+      }
+
+      if (!normalizedQuery && !params.get('q')) {
+        params.set('q', 'bahia');
       }
 
       const res = await fetch(`/api/search?${params}`);
       if (!res.ok) throw new Error('Falha ao buscar patentes. Tente novamente.');
 
       const data = await res.json();
-      setSearchState(prev => ({ ...prev, results: data, page, loading: false }));
+      const rawItems = Array.isArray(data.items) ? data.items : [];
+      const filteredItems = hasLocationFilter
+        ? filterItemsByBahiaLocation(rawItems, { territory, municipality })
+        : rawItems;
+
+      const normalizedData = hasLocationFilter
+        ? {
+            ...data,
+            items: filteredItems,
+            total: filteredItems.length,
+            page: 1,
+            pages: 1,
+            geoFiltered: true,
+            geoFilterLimit: requestLimit,
+          }
+        : {
+            ...data,
+            geoFiltered: false,
+          };
+
+      setSearchState(prev => ({
+        ...prev,
+        results: normalizedData,
+        page: hasLocationFilter ? 1 : page,
+        loading: false,
+      }));
     } catch (err) {
       setSearchState(prev => ({ ...prev, error: err.message, results: null, loading: false }));
     }
@@ -75,6 +100,10 @@ export function usePatentSearch(initialLimit = 15) {
   };
 
   const goToPage = (newPage) => {
+    if (searchState.territory.trim() || searchState.municipality.trim()) {
+      return;
+    }
+
     fetchResults(
       searchState.query,
       searchState.filterType,

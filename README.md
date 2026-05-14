@@ -70,7 +70,7 @@ npm run dev
   - `titulo`
   - `depositante`
   - `ipc`
-  - filtro geográfico opcional por território e município da Bahia (combinado via `q`)
+  - filtro geográfico opcional por território e município da Bahia (base oficial de TI + varredura textual local)
 - Paginacao (`page`, `limit`)
 - Lista de resultados com metadados
 - Modal de detalhes por numero com consulta oficial no INPI por tipo de processo
