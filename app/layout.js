@@ -1,25 +1,25 @@
-import { Fraunces, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-fraunces"
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space"
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-roboto",
+  display: "swap",
 });
 
 export const metadata = {
-  title: "Patentes BR",
-  description: "Buscador de patentes com proxy Next.js"
+  title: "Patentes BR - Consulta de Propriedade Intelectual",
+  description:
+    "Consulte patentes, programas de computador e processos do INPI. Pesquise por termo, numero, titulo, depositante ou classificacao IPC.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body className={`${fraunces.variable} ${spaceGrotesk.variable}`}>{children}</body>
+      <body className={`${inter.variable} font-sans`}>
+        {children}
+      </body>
     </html>
   );
 }
