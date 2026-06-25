@@ -168,51 +168,6 @@ export default function PatentSearchPage() {
           </div>
         )}
 
-        {/* Empty States */}
-        {!results && !loading && !error && (
-          <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in duration-500">
-            <h3 className="mb-3 text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-              Desvende o Mundo da Propriedade Intelectual
-            </h3>
-            <div className="pt-5 grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-3xl mx-auto">
-              <div>
-                <h4 className="text-xl font-semibold text-teal-600 dark:text-teal-400 mb-2">Patentes</h4>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Protegem invenções que apresentam uma solução técnica nova para um problema existente, como um novo produto ou processo. As patentes de invenção (PI) têm validade de 20 anos.
-                </p>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold text-teal-600 dark:text-teal-400 mb-2">Modelo de Utilidade</h4>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Concede proteção a objetos de uso prático, ou parte deles, que apresentem nova forma ou disposição e resultem em melhoria funcional no seu uso ou fabricação. Válido por 15 anos.
-                </p>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold text-teal-600 dark:text-teal-400 mb-2">Outros Registros Importantes</h4>
-                <ul className="list-disc list-inside text-sm text-zinc-700 dark:text-zinc-300 space-y-1">
-                  <li><span className="font-medium">Marcas:</span> Protegem sinais distintivos visualmente perceptíveis que identificam produtos ou serviços.</li>
-                  <li><span className="font-medium">Desenho Industrial:</span> Protege a forma plástica ornamental de um objeto ou o conjunto ornamental de linhas e cores que possa ser aplicado a um produto.</li>
-                  <li><span className="font-medium">Programa de Computador:</span> Garante os direitos autorais sobre o software.</li>
-                  <li><span className="font-medium">Indicação Geográfica:</span> Identifica a origem de produtos ou serviços quando a reputação, característica ou qualidade se deve essencialmente a esse local.</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold text-teal-600 dark:text-teal-400 mb-2">Como Pesquisar?</h4>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300">
-                  Utilize o campo de busca acima para encontrar registros por termos livres, número do processo, título, depositante ou classificação internacional (IPC).
-                </p>
-              </div>
-            </div>
-
-            <p className="mt-8 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
-              Pronto para iniciar sua busca?
-            </p>
-            <div className="w-64 h-64 mb-4">
-              <Lottie animationData={blueCubeAnim} loop={true} />
-            </div>
-          </div>
-        )}
-
         {results?.items?.length === 0 && (
           <EmptyState icon={Server} title="Nenhum resultado" description="Sua busca não retornou patentes. Tente termos mais abrangentes ou troque o filtro." />
         )}
@@ -231,12 +186,6 @@ export default function PatentSearchPage() {
                 ) : null}
               </div>
             </div>
-
-            {/* {results.geoFiltered && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 -mt-4">
-                Filtro geográfico aplicado por varredura textual em {results.geoFilterLimit || results.limit} registros.
-              </p>
-            )} */}
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {results.items.map((item, idx) => (
