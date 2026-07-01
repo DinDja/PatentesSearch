@@ -405,19 +405,13 @@ function ResultsView({
 
             <ResultsList items={results.items} onItemClick={onResultClick} />
 
-            {!results.geoFiltered && totalPages > 1 && (
+            {totalPages > 1 && (
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
                 onPageChange={onPageChange}
                 disabled={loading}
               />
-            )}
-
-            {results.geoFiltered && results.items.length > 0 && (
-              <div className="mt-5 text-center text-sm text-fg-muted">
-                Mostrando {results.items.length} resultado{results.items.length !== 1 && 's'} filtrados por localização
-              </div>
             )}
           </div>
         )}
