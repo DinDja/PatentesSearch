@@ -40,14 +40,10 @@ module.exports = {
           danger: 'var(--accent-danger)',
           dangerSubtle: 'var(--accent-danger-subtle)',
         },
-        secti: {
-          teal: '#00b5b8',
-          purple: '#7c3aed',
-        },
         brand: {
-          blue: '#00b5b8',
-          blueHover: '#009a9c',
-          blueLight: 'rgba(0, 181, 184, 0.08)',
+          blue: '#2563eb',
+          blueHover: '#1d4ed8',
+          blueLight: 'rgba(37, 99, 235, 0.08)',
           red: '#dc2626',
           redLight: 'rgba(220, 38, 38, 0.08)',
           green: '#059669',

@@ -5,11 +5,11 @@ import { Search } from 'lucide-react';
 export function EmptyState({ title, description, className = '' }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center py-24 ${className}`}
+      className={`flex flex-col items-center justify-center py-20 ${className}`}
       role="status"
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-bg-tertiary mb-5">
-        <Search className="h-7 w-7 text-fg-muted" />
+      <div className="flex h-12 w-12 items-center justify-center rounded-md bg-bg-tertiary mb-4">
+        <Search className="h-5 w-5 text-fg-muted" />
       </div>
       <h3 className="text-sm font-semibold text-fg-primary">{title}</h3>
       {description && (

@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function Pagination({ currentPage, totalPages, onPageChange, disabled = false }) {
@@ -21,16 +20,16 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
 
   return (
     <nav
-      className="flex items-center justify-center gap-2 pt-8 pb-4"
-      aria-label="Paginacao dos resultados"
+      className="flex items-center justify-center gap-2 pt-6 pb-4"
+      aria-label="Paginação dos resultados"
     >
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1 || disabled}
-        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-fast disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-        aria-label="Pagina anterior"
+        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-normal disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        aria-label="Página anterior"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Anterior</span>
       </button>
 
@@ -40,12 +39,12 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
             key={page}
             onClick={() => page !== currentPage && !disabled && onPageChange(page)}
             disabled={disabled}
-            className={`min-w-9 h-9 rounded-lg text-sm font-medium transition-all duration-fast ${
+            className={`min-w-9 h-9 rounded-md text-sm font-medium transition-all duration-normal ${
               page === currentPage
-                ? 'bg-accent-primary text-fg-inverse shadow-sm'
+                ? 'bg-accent-primary text-fg-inverse'
                 : 'text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary'
             } disabled:opacity-40 disabled:cursor-not-allowed`}
-            aria-label={`Pagina ${page}`}
+            aria-label={`Página ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
           >
             {page}
@@ -56,11 +55,11 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages || disabled}
-        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-fast disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-        aria-label="Proxima pagina"
+        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-normal disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        aria-label="Próxima página"
       >
-        <span className="hidden sm:inline">Proxima</span>
-        <ChevronRight className="h-4 w-4" />
+        <span className="hidden sm:inline">Próxima</span>
+        <ChevronRight className="h-3.5 w-3.5" />
       </button>
     </nav>
   );

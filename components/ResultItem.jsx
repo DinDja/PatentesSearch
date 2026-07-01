@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export function ResultItem({ item, onClick }) {
   const numero = item.numero || item.numero_processo || '';
-  const titulo = item.titulo || 'Documento sem titulo';
+  const titulo = item.titulo || 'Documento sem título';
   const depositante = item.depositante || item.titular || '';
   const ipc = item.ipc || '';
   const tipo = item.tipo || '';
@@ -12,7 +12,7 @@ export function ResultItem({ item, onClick }) {
 
   const tipoLabel = tipo
     ? tipo === 'programa'
-      ? 'Programa de Computador'
+      ? 'Programa'
       : tipo === 'patente'
         ? 'Patente'
         : tipo.charAt(0).toUpperCase() + tipo.slice(1)
@@ -20,11 +20,10 @@ export function ResultItem({ item, onClick }) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.005, y: -2 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-      className="group cursor-pointer rounded-xl border border-border-subtle bg-bg-primary p-5 shadow-sm transition-all duration-fast hover:shadow-md hover:border-border-secondary"
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+      className="group cursor-pointer rounded-md border border-border-primary bg-bg-elevated p-4 transition-all duration-normal hover:border-border-secondary hover:shadow-sm"
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -36,15 +35,15 @@ export function ResultItem({ item, onClick }) {
       role="button"
       aria-label={`Ver detalhes de ${titulo}`}
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
           {numero && (
-            <span className="inline-flex items-center rounded-md bg-bg-tertiary px-2 py-1 text-xs font-mono font-medium text-fg-secondary border border-border-subtle">
+            <span className="inline-flex items-center rounded-md bg-bg-tertiary px-2 py-0.5 text-xs font-mono font-medium text-fg-tertiary border border-border-subtle">
               {numero}
             </span>
           )}
           {tipoLabel && (
-            <span className="inline-flex items-center rounded-md bg-accent-primary-subtle px-2 py-1 text-xs font-medium text-accent-primary border border-accent-primary/10">
+            <span className="inline-flex items-center rounded-md bg-accent-primary-subtle px-2 py-0.5 text-xs font-medium text-accent-primary border border-accent-primary/10">
               {tipoLabel}
             </span>
           )}
@@ -53,7 +52,7 @@ export function ResultItem({ item, onClick }) {
           )}
         </div>
 
-        <h3 className="text-base font-semibold text-fg-primary group-hover:text-accent-primary transition-colors duration-fast line-clamp-2 sm:text-lg">
+        <h3 className="text-sm font-semibold text-fg-primary line-clamp-2 leading-relaxed">
           {titulo}
         </h3>
 
@@ -65,7 +64,7 @@ export function ResultItem({ item, onClick }) {
           )}
           {depositante && ipc && (
             <span className="text-fg-muted" aria-hidden="true">
-              &middot;
+              ·
             </span>
           )}
           {ipc && (

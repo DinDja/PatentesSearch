@@ -5,25 +5,25 @@ import { Wifi, WifiOff, AlertTriangle, CloudOff } from 'lucide-react';
 const STATUS_CONFIG = {
   online: {
     icon: Wifi,
-    label: 'API online',
+    label: 'Sistemas online',
     className: 'bg-accent-success-subtle text-accent-success border-accent-success/20',
     dotClassName: 'bg-accent-success',
   },
   offline: {
     icon: WifiOff,
-    label: 'API offline',
+    label: 'Sistemas indisponíveis',
     className: 'bg-accent-danger-subtle text-accent-danger border-accent-danger/20',
     dotClassName: 'bg-accent-danger',
   },
   degraded: {
     icon: AlertTriangle,
-    label: 'INPI indisponivel',
+    label: 'INPI indisponível',
     className: 'bg-accent-warning-subtle text-accent-warning border-accent-warning/20',
     dotClassName: 'bg-accent-warning',
   },
   fallback: {
     icon: CloudOff,
-    label: 'Usando dados alternativos',
+    label: 'Dados alternativos',
     className: 'bg-accent-warning-subtle text-accent-warning border-accent-warning/20',
     dotClassName: 'bg-accent-warning',
   },
@@ -52,12 +52,9 @@ export function HealthStatus({ ok, message, source, children }) {
     <div
       className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-[11px] font-medium ${config.className}`}
       role="status"
-      aria-label={`Status da API: ${displayLabel}`}
+      aria-label={`Status dos sistemas: ${displayLabel}`}
     >
       <span className="relative flex h-1.5 w-1.5">
-        {status === 'online' && (
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-success opacity-75" />
-        )}
         <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${config.dotClassName}`} />
       </span>
       {displayLabel}

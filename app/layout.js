@@ -9,13 +9,13 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Patentes BR - Consulta de Propriedade Intelectual",
-  description: "Consulte patentes, programas de computador e processos do INPI. Pesquise por termo, numero, titulo, depositante ou classificacao IPC.",
+  title: "SectiSeach - Sistema de Consulta de Propriedade Intelectual",
+  description: "Sistema  de pesquisa de patentes brasileiras para engenheiros, advogados e pesquisadores.",
   keywords: "patentes, INPI, propriedade intelectual, marcas, patentes Brasil, IPC",
-  authors: [{ name: "Patentes BR" }],
+  authors: [{ name: "Sistema de Patentes" }],
   openGraph: {
-    title: "Patentes BR - Consulta de Propriedade Intelectual",
-    description: "Consulte patentes, programas de computador e processos do INPI",
+    title: "SectiSeach - Sistema de Consulta de Propriedade Intelectual",
+    description: "Sistema  de pesquisa de patentes brasileiras",
     type: "website",
     locale: "pt_BR",
   },
