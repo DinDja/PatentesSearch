@@ -6,32 +6,32 @@ const STATUS_CONFIG = {
   online: {
     icon: Wifi,
     label: 'API online',
-    className: 'bg-brand-greenLight text-brand-green border-brand-green/20',
-    dotClassName: 'bg-brand-green',
+    className: 'bg-accent-success-subtle text-accent-success border-accent-success/20',
+    dotClassName: 'bg-accent-success',
   },
   offline: {
     icon: WifiOff,
     label: 'API offline',
-    className: 'bg-brand-redLight text-brand-red border-brand-red/20',
-    dotClassName: 'bg-brand-red',
+    className: 'bg-accent-danger-subtle text-accent-danger border-accent-danger/20',
+    dotClassName: 'bg-accent-danger',
   },
   degraded: {
     icon: AlertTriangle,
     label: 'INPI indisponivel',
-    className: 'bg-brand-yellowLight text-brand-yellow border-brand-yellow/20',
-    dotClassName: 'bg-brand-yellow',
+    className: 'bg-accent-warning-subtle text-accent-warning border-accent-warning/20',
+    dotClassName: 'bg-accent-warning',
   },
   fallback: {
     icon: CloudOff,
     label: 'Usando dados alternativos',
-    className: 'bg-brand-yellowLight text-brand-yellow border-brand-yellow/20',
-    dotClassName: 'bg-brand-yellow',
+    className: 'bg-accent-warning-subtle text-accent-warning border-accent-warning/20',
+    dotClassName: 'bg-accent-warning',
   },
   unknown: {
     icon: Wifi,
     label: 'Conectando...',
-    className: 'bg-surface text-text-tertiary border-gray-200',
-    dotClassName: 'bg-text-tertiary',
+    className: 'bg-bg-tertiary text-fg-tertiary border-border-subtle',
+    dotClassName: 'bg-fg-tertiary',
   },
 };
 
@@ -50,13 +50,13 @@ export function HealthStatus({ ok, message, source, children }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium ${config.className}`}
+      className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-[11px] font-medium ${config.className}`}
       role="status"
       aria-label={`Status da API: ${displayLabel}`}
     >
       <span className="relative flex h-1.5 w-1.5">
         {status === 'online' && (
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-green opacity-75" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-success opacity-75" />
         )}
         <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${config.dotClassName}`} />
       </span>

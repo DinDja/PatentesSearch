@@ -6,7 +6,7 @@ export function ResultsList({ items, onItemClick, className = '' }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full space-y-3 ${className}`}>
       {items.map((item, idx) => (
         <ResultItem
           key={item.numero || idx}

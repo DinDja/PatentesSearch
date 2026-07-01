@@ -1,11 +1,11 @@
 'use client';
 
 const VARIANTS = {
-  default: 'bg-surface text-text-secondary',
-  primary: 'bg-brand-blueLight text-brand-blue',
-  success: 'bg-brand-greenLight text-brand-green',
-  warning: 'bg-brand-yellowLight text-brand-yellow',
-  danger: 'bg-brand-redLight text-brand-red',
+  default: 'bg-bg-tertiary text-fg-secondary border-border-subtle',
+  primary: 'bg-accent-primary-subtle text-accent-primary border-accent-primary/20',
+  success: 'bg-accent-success-subtle text-accent-success border-accent-success/20',
+  warning: 'bg-accent-warning-subtle text-accent-warning border-accent-warning/20',
+  danger: 'bg-accent-danger-subtle text-accent-danger border-accent-danger/20',
 };
 
 export function StatusBadge({ children, variant = 'default', className = '' }) {
@@ -13,7 +13,7 @@ export function StatusBadge({ children, variant = 'default', className = '' }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${variantClass} ${className}`}
+      className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-medium ${variantClass} ${className}`}
     >
       {children}
     </span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export function ResultItem({ item, onClick }) {
   const numero = item.numero || item.numero_processo || '';
@@ -19,8 +19,12 @@ export function ResultItem({ item, onClick }) {
     : '';
 
   return (
-    <article
-      className="group cursor-pointer rounded-lg border-b border-gray-100 py-5 transition-colors hover:bg-surface/50 last:border-b-0"
+    <motion.article
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.005, y: -2 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="group cursor-pointer rounded-xl border border-border-subtle bg-bg-primary p-5 shadow-sm transition-all duration-fast hover:shadow-md hover:border-border-secondary"
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -32,48 +36,45 @@ export function ResultItem({ item, onClick }) {
       role="button"
       aria-label={`Ver detalhes de ${titulo}`}
     >
-      <div className="max-w-results">
-        <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           {numero && (
-            <span className="font-mono font-medium text-text-secondary">
+            <span className="inline-flex items-center rounded-md bg-bg-tertiary px-2 py-1 text-xs font-mono font-medium text-fg-secondary border border-border-subtle">
               {numero}
             </span>
           )}
           {tipoLabel && (
-            <span className="rounded-full bg-surface px-2 py-0.5 text-[10px] font-medium text-text-secondary">
+            <span className="inline-flex items-center rounded-md bg-accent-primary-subtle px-2 py-1 text-xs font-medium text-accent-primary border border-accent-primary/10">
               {tipoLabel}
             </span>
           )}
           {dataPublicacao && (
-            <>
-              <span aria-hidden="true">&middot;</span>
-              <span>{dataPublicacao}</span>
-            </>
+            <span className="text-xs text-fg-muted">{dataPublicacao}</span>
           )}
         </div>
 
-        <h3 className="mb-1 text-base font-normal leading-snug text-brand-link group-hover:underline group-hover:underline-offset-2 sm:text-lg">
+        <h3 className="text-base font-semibold text-fg-primary group-hover:text-accent-primary transition-colors duration-fast line-clamp-2 sm:text-lg">
           {titulo}
         </h3>
 
-        <p className="text-sm text-text-secondary line-clamp-2">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
           {depositante && (
-            <span className="font-medium text-text-primary">
+            <span className="font-medium text-fg-secondary">
               {depositante}
             </span>
           )}
           {depositante && ipc && (
-            <span className="mx-1.5 text-text-tertiary" aria-hidden="true">
+            <span className="text-fg-muted" aria-hidden="true">
               &middot;
             </span>
           )}
           {ipc && (
-            <span>
-              <span className="text-text-tertiary">IPC</span> {ipc.split(' ')[0]}
+            <span className="text-fg-muted">
+              <span className="font-medium">IPC</span> {ipc.split(' ')[0]}
             </span>
           )}
-        </p>
+        </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

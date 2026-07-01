@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function Pagination({ currentPage, totalPages, onPageChange, disabled = false }) {
@@ -18,34 +19,32 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
     pages.push(i);
   }
 
-  const buttonBase =
-    'flex h-9 min-w-9 items-center justify-center rounded-full text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
-  const buttonActive = 'bg-brand-blueLight text-brand-blue cursor-default';
-  const buttonInactive =
-    'text-brand-link hover:bg-surface cursor-pointer';
-
   return (
     <nav
-      className="flex items-center justify-center gap-1 pt-8 pb-4"
+      className="flex items-center justify-center gap-2 pt-8 pb-4"
       aria-label="Paginacao dos resultados"
     >
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1 || disabled}
-        className={`${buttonBase} px-2 text-brand-link hover:bg-surface`}
+        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-fast disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
         aria-label="Pagina anterior"
       >
         <ChevronLeft className="h-4 w-4" />
-        <span className="ml-1 hidden sm:inline">Anterior</span>
+        <span className="hidden sm:inline">Anterior</span>
       </button>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         {pages.map((page) => (
           <button
             key={page}
             onClick={() => page !== currentPage && !disabled && onPageChange(page)}
             disabled={disabled}
-            className={`${buttonBase} ${page === currentPage ? buttonActive : buttonInactive}`}
+            className={`min-w-9 h-9 rounded-lg text-sm font-medium transition-all duration-fast ${
+              page === currentPage
+                ? 'bg-accent-primary text-fg-inverse shadow-sm'
+                : 'text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary'
+            } disabled:opacity-40 disabled:cursor-not-allowed`}
             aria-label={`Pagina ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
           >
@@ -57,10 +56,10 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages || disabled}
-        className={`${buttonBase} px-2 text-brand-link hover:bg-surface`}
+        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-fast disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
         aria-label="Proxima pagina"
       >
-        <span className="mr-1 hidden sm:inline">Proxima</span>
+        <span className="hidden sm:inline">Proxima</span>
         <ChevronRight className="h-4 w-4" />
       </button>
     </nav>

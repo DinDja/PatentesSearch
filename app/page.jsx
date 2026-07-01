@@ -13,6 +13,7 @@ import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { Pagination } from '../components/Pagination';
 import { FilterBadge } from '../components/FilterBadge';
+import { SectiLogo } from '../components/SectiLogo';
 
 export default function PatentSearchPage() {
   const [health, setHealth] = useState({ ok: null, message: '' });
@@ -91,7 +92,7 @@ export default function PatentSearchPage() {
   const showResults = hasSearched || results?.items?.length > 0;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-bg-primary">
       {!showResults ? (
         <LandingView
           query={query}
@@ -165,45 +166,33 @@ function LandingView({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="flex justify-end px-4 pt-4 sm:px-6 sm:pt-5">
-        <HealthStatus ok={health.ok} message={health.message} />
-      </div>
-
-      <div className="flex flex-1 flex-col items-center justify-center px-4 pb-20">
-        <div className="w-full max-w-[584px]">
-          <div className="mb-8 text-center">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
-              Patentes BR
+      <div className="flex flex-1 flex-col items-center justify-center px-4 pb-20 pt-32 sm:pt-40">
+        <div className="w-full max-w-2xl">
+          <div className="mb-10 text-center">
+            
+            <h1 className="font-display text-4xl font-semibold tracking-tight text-fg-primary sm:text-5xl lg:text-6xl">
+              Patentes SECTI
             </h1>
-            <p className="mt-3 text-sm text-text-secondary sm:text-base">
-              Consulte patentes, programas de computador e processos do INPI
-            </p>
           </div>
 
-          <SearchBar
-            value={query}
-            onChange={onQueryChange}
-            onSubmit={onSearch}
-            loading={loading}
-            autoFocus
-          />
-
-          <div className="mt-4">
-            <AdvancedFilters
-              filterType={filterType}
-              territory={territory}
-              municipality={municipality}
-              onUpdate={onUpdate}
-              onClear={onClearFilters}
-              activeCount={activeFilterCount}
+          <div className="space-y-4">
+            <SearchBar
+              value={query}
+              onChange={onQueryChange}
+              onSubmit={onSearch}
+              loading={loading}
+              autoFocus
             />
+
           </div>
+
+        
         </div>
       </div>
 
-      <footer className="border-t border-gray-200 bg-surface py-3">
-        <p className="text-center text-xs text-text-tertiary">
-          Patentes BR — Consulta de propriedade intelectual brasileira
+      <footer className="border-t border-border-subtle bg-bg-secondary py-4">
+        <p className="text-center text-xs text-fg-muted">
+          Patentes SECTI — Consulta de propriedade intelectual brasileira
         </p>
       </footer>
     </div>
@@ -237,20 +226,16 @@ function ResultsView({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3 sm:gap-6 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-border-primary bg-bg-primary/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
           <button
             onClick={onBackToHome}
-            className="flex-shrink-0 font-display text-xl font-bold tracking-tight text-text-primary hover:opacity-80 transition-opacity"
+            className="group flex-shrink-0 font-display text-lg font-semibold tracking-tight text-fg-primary transition-colors hover:text-accent-primary"
             aria-label="Voltar para pagina inicial"
           >
-            <span className="text-brand-blue">P</span>
-            <span className="text-brand-red">a</span>
-            <span className="text-brand-yellow">t</span>
-            <span className="text-brand-blue">e</span>
-            <span className="text-brand-green">n</span>
-            <span className="text-brand-red">t</span>
-            <span className="text-text-tertiary">es</span>
+            <span className="bg-gradient-to-r from-secti-teal to-secti-purple bg-clip-text text-transparent">P</span>
+            <span className="text-fg-primary group-hover:text-accent-primary transition-colors">atentes</span>
+            <span className="text-fg-muted">BR</span>
           </button>
 
           <div className="flex-1 max-w-xl">
@@ -263,13 +248,12 @@ function ResultsView({
             />
           </div>
 
-          <HealthStatus ok={health.ok} message={health.message} />
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-4 flex-1">
-        <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
+      <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 flex-1">
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-2">
             <AdvancedFilters
               filterType={filterType}
               territory={territory}
@@ -302,7 +286,7 @@ function ResultsView({
           </div>
         </div>
 
-        {error && <ErrorState message={error} onDismiss={onDismissError} className="mb-4" />}
+        {error && <ErrorState message={error} onDismiss={onDismissError} className="mb-6" />}
 
         {loading && <LoadingState count={5} />}
 
@@ -315,17 +299,13 @@ function ResultsView({
 
         {!loading && results?.items?.length > 0 && (
           <div className="animate-in">
-            <div className="mb-3 text-xs text-text-tertiary">
-              Aproximadamente{' '}
-              <span className="font-medium text-text-secondary">
-                {totalResults?.toLocaleString()}
-              </span>{' '}
-              resultados
-              {hasGeoFilter && (
-                <span className="ml-2 text-brand-yellow">
-                  (filtrado por localizacao na Bahia)
-                </span>
-              )}
+            <div className="mb-4 flex items-center justify-between">
+              <div className="text-sm text-fg-secondary">
+                <span className="font-medium text-fg-primary">{totalResults?.toLocaleString()}</span> resultados encontrados
+                {hasGeoFilter && (
+                  <span className="ml-2 text-accent-warning">(filtrado por localizacao na Bahia)</span>
+                )}
+              </div>
             </div>
 
             <ResultsList items={results.items} onItemClick={onResultClick} />
@@ -340,19 +320,18 @@ function ResultsView({
             )}
 
             {results.geoFiltered && results.items.length > 0 && (
-              <div className="mt-4 text-center text-xs text-text-tertiary">
-                Mostrando {results.items.length} resultados filtrados por
-                localizacao
+              <div className="mt-6 text-center text-sm text-fg-muted">
+                Mostrando {results.items.length} resultados filtrados por localizacao
               </div>
             )}
           </div>
         )}
       </main>
 
-      <footer className="border-t border-gray-200 bg-surface py-3 mt-auto">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <p className="text-center text-xs text-text-tertiary">
-            Patentes BR — Consulta de propriedade intelectual brasileira
+      <footer className="border-t border-border-subtle bg-bg-secondary py-4 mt-auto">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-center text-xs text-fg-muted">
+            Patentes SECTI — Consulta de propriedade intelectual brasileira
           </p>
         </div>
       </footer>

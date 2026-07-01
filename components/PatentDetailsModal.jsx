@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, AlertTriangle, FileText, Building2, Calendar, Tag, Hash, Globe, Shield } from 'lucide-react';
 
 const SECTIONS = [
@@ -106,15 +107,15 @@ function DetailSection({ icon: Icon, label, data, fields }) {
 
   return (
     <div className="py-4 first:pt-0">
-      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
+      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-fg-muted">
         <Icon className="h-3.5 w-3.5" />
         {label}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {Object.entries(sectionData).map(([key, value]) => (
-          <div key={key}>
-            <dt className="text-xs text-text-tertiary">{formatFieldName(key)}</dt>
-            <dd className="mt-0.5 text-sm text-text-primary whitespace-pre-wrap leading-relaxed">
+          <div key={key} className="group">
+            <dt className="text-xs text-fg-tertiary mb-1">{formatFieldName(key)}</dt>
+            <dd className="text-sm text-fg-primary whitespace-pre-wrap leading-relaxed">
               {formatFieldValue(value)}
             </dd>
           </div>
@@ -126,18 +127,18 @@ function DetailSection({ icon: Icon, label, data, fields }) {
 
 function FallbackNotice({ message }) {
   return (
-    <div className="flex items-start gap-3 rounded-lg bg-brand-yellowLight border border-brand-yellow/20 px-4 py-3">
-      <AlertTriangle className="h-5 w-5 flex-shrink-0 text-brand-yellow mt-0.5" />
+    <div className="flex items-start gap-3 rounded-xl bg-accent-warning-subtle border border-accent-warning/20 px-4 py-3 mb-4">
+      <AlertTriangle className="h-5 w-5 flex-shrink-0 text-accent-warning mt-0.5" />
       <div>
-        <p className="text-sm font-medium text-brand-yellow">
+        <p className="text-sm font-medium text-accent-warning">
           Dados alternativos
         </p>
-        <p className="mt-1 text-xs text-text-secondary leading-relaxed">
+        <p className="mt-1 text-xs text-fg-secondary leading-relaxed">
           Os dados oficiais do INPI nao responderam no momento. Exibindo dados
           alternativos disponiveis para manter a experiencia funcionando.
         </p>
         {message && (
-          <p className="mt-1 text-xs text-text-tertiary italic">
+          <p className="mt-1 text-xs text-fg-tertiary italic">
             {message}
           </p>
         )}
@@ -193,8 +194,6 @@ export function PatentDetailsModal({
     }
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const isFallback = data?.fonte === 'UPSTREAM_FALLBACK';
   const fallbackMessage = data?.erro_consulta_inpi;
 
@@ -213,156 +212,177 @@ export function PatentDetailsModal({
     : '';
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex justify-end bg-black/30 backdrop-blur-[2px]"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Detalhes do processo ${numero}`}
-    >
-      <div
-        ref={modalRef}
-        className="flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-l-2xl bg-white shadow-modal animate-in"
-        style={{ animationDuration: '250ms' }}
-      >
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-text-tertiary" />
-            <h2 className="text-base font-semibold text-text-primary">
-              Ficha do Processo
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-text-tertiary hover:bg-surface transition-colors"
-            aria-label="Fechar detalhes"
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-bg-primary/60 backdrop-blur-sm"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) onClose();
+            }}
+          />
+          
+          <motion.div
+            ref={modalRef}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.3, type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-2xl flex-col bg-bg-elevated shadow-2xl"
           >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-6 py-5">
-          {loading && (
-            <div className="flex flex-col items-center justify-center py-24">
-              <div className="skeleton h-6 w-48 mb-4" />
-              <div className="skeleton h-4 w-32 mb-8" />
-              <div className="space-y-4 w-full max-w-sm">
-                <div className="skeleton h-4 w-full" />
-                <div className="skeleton h-4 w-3/4" />
-                <div className="skeleton h-4 w-5/6" />
-                <div className="skeleton h-16 w-full" />
-              </div>
-              <p className="mt-6 text-sm text-text-tertiary">
-                Recuperando documento oficial...
-              </p>
-            </div>
-          )}
-
-          {error && !loading && (
-            <div className="flex flex-col items-center justify-center py-24">
-              <AlertTriangle className="h-10 w-10 text-brand-red mb-3" />
-              <p className="text-sm font-medium text-text-primary">
-                Erro ao carregar detalhes
-              </p>
-              <p className="mt-1 text-sm text-text-secondary">{error}</p>
-            </div>
-          )}
-
-          {data && !loading && !error && (
-            <div className="space-y-1 divide-y divide-gray-100">
-              {isFallback && (
-                <FallbackNotice message={fallbackMessage} />
-              )}
-
-              <div className="pb-4">
-                <div className="mb-3 flex flex-wrap items-center gap-2">
+            <div className="flex items-center justify-between border-b border-border-primary px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-primary-subtle">
+                  <FileText className="h-4 w-4 text-accent-primary" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-fg-primary">
+                    Ficha do Processo
+                  </h2>
                   {numero && (
-                    <span className="rounded-full bg-brand-blueLight px-2.5 py-1 text-xs font-medium text-brand-blue font-mono">
-                      {numero}
-                    </span>
-                  )}
-                  {tipoLabel && (
-                    <span className="rounded-full bg-surface px-2.5 py-1 text-xs font-medium text-text-secondary">
-                      {tipoLabel}
-                    </span>
-                  )}
-                  {data.fonte && (
-                    <span className="rounded-full bg-surface px-2.5 py-1 text-xs text-text-tertiary">
-                      Fonte: {data.fonte}
-                    </span>
+                    <p className="text-xs text-fg-muted font-mono">{numero}</p>
                   )}
                 </div>
-
-                {(data.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url) && (
-                  <a
-                    href={data.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-blue hover:underline"
-                  >
-                    <Globe className="h-3.5 w-3.5" />
-                    Abrir fonte oficial no INPI
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                )}
-
-                <h3 className="mt-3 text-xl font-semibold leading-tight text-text-primary">
-                  {data.titulo || 'Sem titulo'}
-                </h3>
               </div>
+              <button
+                onClick={onClose}
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-tertiary hover:bg-bg-tertiary hover:text-fg-primary transition-all duration-fast"
+                aria-label="Fechar detalhes"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-              {SECTIONS.map((section) => (
-                <DetailSection
-                  key={section.key}
-                  icon={section.icon}
-                  label={section.label}
-                  data={data}
-                  fields={section.fields}
-                />
-              ))}
-
-              {data.detalhes_oficiais && typeof data.detalhes_oficiais === 'object' && (
-                <div className="py-4">
-                  <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
-                    <Shield className="h-3.5 w-3.5" />
-                    Dados Oficiais (INPI)
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              {loading && (
+                <div className="flex flex-col items-center justify-center py-24">
+                  <div className="skeleton h-6 w-48 mb-4 rounded-full" />
+                  <div className="skeleton h-4 w-32 mb-8 rounded-full" />
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="skeleton h-4 w-full rounded" />
+                    <div className="skeleton h-4 w-3/4 rounded" />
+                    <div className="skeleton h-4 w-5/6 rounded" />
+                    <div className="skeleton h-16 w-full rounded-lg" />
                   </div>
-                  <div className="space-y-2">
-                    {Object.entries(data.detalhes_oficiais).map(([key, value]) => (
-                      <div key={key}>
-                        <dt className="text-xs text-text-tertiary">{formatFieldName(key)}</dt>
-                        <dd className="mt-0.5 text-sm text-text-primary">
-                          {formatFieldValue(value)}
-                        </dd>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="mt-6 text-sm text-fg-tertiary">
+                    Recuperando documento oficial...
+                  </p>
                 </div>
               )}
 
-              {extraFields.length > 0 && (
-                <div className="py-4">
-                  <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
-                    Outras informacoes
+              {error && !loading && (
+                <div className="flex flex-col items-center justify-center py-24">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent-danger-subtle mb-4">
+                    <AlertTriangle className="h-7 w-7 text-accent-danger" />
                   </div>
-                  <div className="space-y-2">
-                    {extraFields.map(([key, value]) => (
-                      <div key={key}>
-                        <dt className="text-xs text-text-tertiary">{formatFieldName(key)}</dt>
-                        <dd className="mt-0.5 text-sm text-text-primary whitespace-pre-wrap">
-                          {formatFieldValue(value)}
-                        </dd>
-                      </div>
+                  <p className="text-sm font-medium text-fg-primary">
+                    Erro ao carregar detalhes
+                  </p>
+                  <p className="mt-1 text-sm text-fg-secondary max-w-xs text-center">{error}</p>
+                </div>
+              )}
+
+              {data && !loading && !error && (
+                <div className="space-y-6">
+                  {isFallback && (
+                    <FallbackNotice message={fallbackMessage} />
+                  )}
+
+                  <div className="pb-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      {numero && (
+                        <span className="inline-flex items-center rounded-md bg-accent-primary-subtle px-2.5 py-1 text-xs font-medium text-accent-primary font-mono border border-accent-primary/20">
+                          {numero}
+                        </span>
+                      )}
+                      {tipoLabel && (
+                        <span className="inline-flex items-center rounded-md bg-bg-tertiary px-2.5 py-1 text-xs font-medium text-fg-secondary border border-border-subtle">
+                          {tipoLabel}
+                        </span>
+                      )}
+                      {data.fonte && (
+                        <span className="inline-flex items-center rounded-md bg-bg-tertiary px-2.5 py-1 text-xs text-fg-tertiary border border-border-subtle">
+                          Fonte: {data.fonte}
+                        </span>
+                      )}
+                    </div>
+
+                    {(data.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url) && (
+                      <a
+                        href={data.url_oficial || selectedItem?.url_detalhe || selectedItem?.fonte_zip_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-xs font-medium text-accent-primary hover:underline"
+                      >
+                        <Globe className="h-3.5 w-3.5" />
+                        Abrir fonte oficial no INPI
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+
+                    <h3 className="mt-4 text-xl font-semibold leading-tight text-fg-primary">
+                      {data.titulo || 'Sem titulo'}
+                    </h3>
+                  </div>
+
+                  <div className="divide-y divide-border-subtle">
+                    {SECTIONS.map((section) => (
+                      <DetailSection
+                        key={section.key}
+                        icon={section.icon}
+                        label={section.label}
+                        data={data}
+                        fields={section.fields}
+                      />
                     ))}
                   </div>
+
+                  {data.detalhes_oficiais && typeof data.detalhes_oficiais === 'object' && (
+                    <div className="py-4 border-t border-border-subtle">
+                      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-fg-muted">
+                        <Shield className="h-3.5 w-3.5" />
+                        Dados Oficiais (INPI)
+                      </div>
+                      <div className="space-y-3">
+                        {Object.entries(data.detalhes_oficiais).map(([key, value]) => (
+                          <div key={key}>
+                            <dt className="text-xs text-fg-tertiary mb-1">{formatFieldName(key)}</dt>
+                            <dd className="text-sm text-fg-primary">
+                              {formatFieldValue(value)}
+                            </dd>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {extraFields.length > 0 && (
+                    <div className="py-4 border-t border-border-subtle">
+                      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-fg-muted">
+                        Outras informacoes
+                      </div>
+                      <div className="space-y-3">
+                        {extraFields.map(([key, value]) => (
+                          <div key={key}>
+                            <dt className="text-xs text-fg-tertiary mb-1">{formatFieldName(key)}</dt>
+                            <dd className="text-sm text-fg-primary whitespace-pre-wrap">
+                              {formatFieldValue(value)}
+                            </dd>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
