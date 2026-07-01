@@ -178,19 +178,8 @@ function LandingView({
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-3xl">
           <div className="mb-10 flex flex-col items-center text-center">
-            <div className="mb-6 flex items-center justify-center border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-700">
-              <span className="mr-2 h-1.5 w-1.5 bg-blue-700" />
-              Governo do Estado da Bahia
-              
-              <span className="ml-2 h-1.5 w-1.5 bg-blue-700" />
-            </div>
-
-            <h1 className="font-display text-3xl font-bold uppercase tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-              Pesquisa de Patentes
-            </h1>
-
-            <div className="mt-5 flex items-center gap-3 text-slate-700">
-              <div className="flex flex-col leading-none">
+                <div className="mt-5 flex items-center gap-3 text-slate-700">
+              <div className="flex flex-col leading-none mb-1">
                 <span className="text-lg font-bold uppercase tracking-[0.18em] text-slate-900">
                   SECTI
                 </span>
@@ -199,6 +188,9 @@ function LandingView({
                 </span>
               </div>
             </div>
+            <h1 className="font-display text-3xl font-bold uppercase tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+              Pesquisa de Patentes
+            </h1>
           </div>
 
           <form onSubmit={handleSubmit} className="w-full">
@@ -289,7 +281,7 @@ function LandingView({
           </div>
 
           <p className="text-center text-xs text-slate-500">
-            Sistema de Patentes Brasileiras — Consulta de Propriedade Intelectual
+            Sistema de consulta de patentes — Consulta de Propriedade Intelectual
           </p>
 
           <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
